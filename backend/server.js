@@ -10,8 +10,19 @@ const PORT = process.env.PORT || 3001;
 const uploadsDir = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://ajaia-docs-a32avcpon-vamsidhar3081s-projects.vercel.app"
+];
+
 app.use(cors({
-  origin: true,
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
